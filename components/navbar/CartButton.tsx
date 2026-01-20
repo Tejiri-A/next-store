@@ -1,9 +1,25 @@
-import React from 'react'
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { ShoppingCartIcon } from "lucide-react";
 
-function CartButton() {
+async function CartButton() {
+  // temp
+  const numItemsInCart = 9;
   return (
-    <div>CartButton</div>
-  )
+    <Button
+      asChild
+      variant={"outline"}
+      size={"icon"}
+      className="flex justify-center items-center relative"
+    >
+      <Link href={"/cart"}>
+        <ShoppingCartIcon />
+        <span className="absolute -top-3 -right-3 bg-primary text-white rounded-full size-6 flex items-center justify-center text-xs">
+          {numItemsInCart}
+        </span>
+      </Link>
+    </Button>
+  );
 }
 
-export default CartButton
+export default CartButton;
