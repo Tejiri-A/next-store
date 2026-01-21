@@ -1,11 +1,18 @@
-import React from 'react'
+import { Separator } from "../ui/separator";
 
-type Props = {}
+type Props = {
+  text: string;
+};
 
-function SectionTitle({}: Props) {
+function SectionTitle({ text }: Props) {
   return (
-    <div>SectionTitle</div>
-  )
+    <div>
+      <h2 className="text-3xl font-medium tracking-wider capitalize mb-8">
+        {text}
+      </h2>
+      <Separator/>
+    </div>
+  );
 }
 
-export default SectionTitle
+export default SectionTitle;
