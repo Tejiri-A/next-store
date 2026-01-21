@@ -3,8 +3,8 @@ import Container from "../global/Container";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
 import CartButton from "./CartButton";
-import DarkMode from "./DarkMode";
 import LinksDropdown from "./LinksDropdown";
+import { ModeToggle } from "./ModeToggle";
 
 function Navbar() {
   return (
@@ -14,7 +14,7 @@ function Navbar() {
         <NavSearch />
         <div className="flex gap-4 items-center">
           <CartButton />
-          <DarkMode />
+          <ModeToggle />
           <LinksDropdown />
         </div>
       </Container>
