@@ -9,7 +9,7 @@ import { Grid2X2Icon, ListIcon } from "lucide-react";
 type Props = { layout: string; search: string };
 
 async function ProductsContainer({ layout, search }: Props) {
-  const products = await fetchAllProducts();
+  const products = await fetchAllProducts({search});
   const totalProducts = products.length;
   const searchTerm = search ? `&search=${search}` : ``;
 
