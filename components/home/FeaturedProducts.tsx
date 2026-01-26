@@ -12,8 +12,8 @@ async function FeaturedProducts() {
   return (
     <section className="pt-24">
       <SectionTitle text="featured products" />
-      {/* add products props later */}
-      <ProductsGrid/>
+
+      <ProductsGrid products={products} />
     </section>
   );
 }
