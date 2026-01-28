@@ -9,7 +9,15 @@ const nextConfig: NextConfig = {
         hostname: "images.pexels.com",
       },
     ],
-  },
+  }
 };
+
+// module.exports = {
+//   experimental: {
+//     serverActions: {
+//       bodySizeLimit: "2mb",
+//     },
+//   },
+// };
 
 export default nextConfig;
