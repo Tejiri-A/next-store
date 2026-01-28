@@ -20,7 +20,7 @@ function CheckboxInput({
       <Label
         htmlFor={name}
         className="text-sm leading-none capitalize peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      />
+      >{label}</Label>
     </div>
   );
 }
