@@ -2,6 +2,8 @@
 import { prisma } from "@/db/client";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { productSchema, validateWithZodSchema } from "./schemas";
+import z from "zod";
 
 async function getAuthUser() {
   const user = await currentUser();
@@ -9,7 +11,7 @@ async function getAuthUser() {
   return user;
 }
 
-function renderError(error:unknown):{message:string} {
+function renderError(error: unknown): { message: string } {
   console.error(error);
   return {
     message:
@@ -59,25 +61,13 @@ export async function createProductAction(
 ): Promise<{ message: string }> {
   const user = await getAuthUser();
   try {
-    const name = formData.get("name") as string;
-    const company = formData.get("company") as string;
-    const price = Number(formData.get("price") as string);
-    // temp
-    const image = formData.get("image") as File;
-    const description = formData.get("description") as string;
-    const featured = Boolean(formData.get("featured") as string);
+    const rawData = Object.fromEntries(formData);
+    const validatedData = validateWithZodSchema(productSchema, rawData);
 
     await prisma.product.create({
-      data: {
-        name,
-        company,
-        price,
-        image: "/images/product-1.jpg",
-        description,
-        featured,
-        clerkId: user?.id,
-      },
+      data: { ...validatedData, clerkId: user.id, image: "/images/product-2.jpg" },
     });
+
     return { message: "product created successfully" };
   } catch (error) {
     return renderError(error);
