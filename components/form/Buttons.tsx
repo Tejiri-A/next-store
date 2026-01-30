@@ -3,7 +3,12 @@
 import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { Loader2Icon } from "lucide-react";
+import {
+  Loader2Icon,
+  PencilIcon,
+  RotateCwIcon,
+  Trash2Icon,
+} from "lucide-react";
 
 type btnSize = "default" | "lg" | "sm";
 
@@ -34,6 +39,33 @@ export function SubmitButton({
       ) : (
         text
       )}
+    </Button>
+  );
+}
+
+type ActionType = "edit" | "delete";
+
+export function IconButton({ actionType }: { actionType: ActionType }) {
+  const { pending } = useFormStatus();
+  const renderIcon = () => {
+    switch (actionType) {
+      case "edit":
+        return <PencilIcon />;
+      case "delete":
+        return <Trash2Icon />;
+      default:
+        const never: never = actionType;
+        throw new Error("Invalid action type: " + never);
+    }
+  };
+  return (
+    <Button
+      type="submit"
+      size={"icon"}
+      variant={"link"}
+      className="p-2 cursor-pointer hover:bg-muted-foreground hover:text-white rounded-full"
+    >
+      {pending ? <RotateCwIcon className="animate-spin" /> : renderIcon()}
     </Button>
   );
 }

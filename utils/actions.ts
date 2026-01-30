@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { imageSchema, productSchema, validateWithZodSchema } from "./schemas";
 import z from "zod";
 import { uploadImage } from "./supabase";
+import { revalidatePath } from "next/cache";
 
 async function getAuthUser() {
   const user = await currentUser();
@@ -12,11 +13,17 @@ async function getAuthUser() {
   return user;
 }
 
+async function getAdminUser() {
+  const user = await getAuthUser();
+  if (user.id !== process.env.ADMIN_USER_ID) redirect("/");
+  return user;
+}
+
 function renderError(error: unknown): { message: string } {
   console.error(error);
   return {
     message:
-      error instanceof Error ? error.message : "Failed to create product",
+      error instanceof Error ? error.message : "Something went wrong",
   };
 }
 
@@ -75,9 +82,34 @@ export async function createProductAction(
         image: fullPath,
       },
     });
-
   } catch (error) {
     return renderError(error);
   }
-  redirect("/admin/products")
+  redirect("/admin/products");
+}
+
+export async function fetchAdminProducts() {
+  await getAdminUser();
+  const products = await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return products;
+}
+
+export async function deleteProductAction(prevState: { productId: string }) {
+  const { productId } = prevState;
+  await getAdminUser();
+  try {
+    await prisma.product.delete({
+      where: {
+        id: productId,
+      },
+    });
+    revalidatePath("/admin/products");
+    return { message: "Product removed successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
 }
