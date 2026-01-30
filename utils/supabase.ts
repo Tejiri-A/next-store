@@ -5,7 +5,6 @@ const bucket = "main-bucket";
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_KEY;
 
-
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error("Missing supabase configuration. Check your .env file.");
 }
@@ -35,4 +34,10 @@ export async function uploadImage(image: File) {
   //   return the public URL of the uploaded image
   const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(newName);
   return urlData.publicUrl;
+}
+
+export function deleteImage(url: string) {
+  const imageName = url.split("/").pop();
+  if (!imageName) throw new Error("Invalid URL");
+  return supabase.storage.from(bucket).remove([imageName]);
 }

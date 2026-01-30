@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { imageSchema, productSchema, validateWithZodSchema } from "./schemas";
 import z from "zod";
-import { uploadImage } from "./supabase";
+import { deleteImage, uploadImage } from "./supabase";
 import { revalidatePath } from "next/cache";
 
 async function getAuthUser() {
@@ -22,8 +22,7 @@ async function getAdminUser() {
 function renderError(error: unknown): { message: string } {
   console.error(error);
   return {
-    message:
-      error instanceof Error ? error.message : "Something went wrong",
+    message: error instanceof Error ? error.message : "Something went wrong",
   };
 }
 
@@ -102,11 +101,12 @@ export async function deleteProductAction(prevState: { productId: string }) {
   const { productId } = prevState;
   await getAdminUser();
   try {
-    await prisma.product.delete({
+    const product = await prisma.product.delete({
       where: {
         id: productId,
       },
     });
+    await deleteImage(product.image);
     revalidatePath("/admin/products");
     return { message: "Product removed successfully" };
   } catch (error) {
